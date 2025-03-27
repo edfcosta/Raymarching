@@ -120,17 +120,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
 // ================================
-// ILUMINAÇÃO DE PHONG Adaptado de:
+// ILUMINAÇÃO DE BLINN-PHONG Adaptado de:
 // https://www.shadertoy.com/view/XlXGDj
 // ================================
 
 // Se bateu em algo
 if (t < 100.0) {
     vec3 p = ro + rd * t;
-    
-    // Cálculo da normal usando diferença de mapa (SDF)
-    vec2 e = vec2(0.001, 0.0);
 
+    // ============================================
+    // Cálculo de normais
+    // https://iquilezles.org/articles/normalsSDF/
+    // ============================================
+    vec2 e = vec2(0.001, 0.0);
     vec3 normal = normalize(vec3(
         map(p + e.xyy).x - map(p - e.xyy).x,
         map(p + e.yxy).x - map(p - e.yxy).x,
@@ -140,7 +142,6 @@ if (t < 100.0) {
     vec3 lightDir = normalize(vec3(-1.0, 1.0, -1.0));
     vec3 viewDir = normalize(rd); 
     
-    // Oclusão ambiente
     float occ = 0.4;
 
     // ambiente 
@@ -244,7 +245,7 @@ const audioContext = Howler.ctx;
 const analyser = audioContext.createAnalyser();
 Howler.masterGain.connect(analyser);
 
-analyser.fftSize = 256;
+analyser.fftSize = 512;
 const bufferLength = analyser.frequencyBinCount;
 const dataArray = new Uint8Array(bufferLength);
 
